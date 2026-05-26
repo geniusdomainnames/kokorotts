@@ -7,6 +7,9 @@ export async function POST(request) {
     return Response.json({ error: "Text is required" }, { status: 400 });
   }
 
+  // lang_code is intentionally omitted — the Modal backend auto-detects
+  // it from the voice name via the VOICE_TO_LANG lookup table.
+  // Passing lang_code: "a" would break non-English voices.
   const modalRes = await fetch(
     "https://geniusdomainnames--kokoro-tts-web.modal.run/synthesize",
     {
@@ -17,7 +20,7 @@ export async function POST(request) {
         voice: voice || "af_heart",
         speed: speed || 1.0,
         format: "wav",
-        lang_code: "a",
+        // lang_code: auto-detected server-side
       }),
     }
   );

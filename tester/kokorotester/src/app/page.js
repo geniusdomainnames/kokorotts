@@ -5,34 +5,100 @@
 import { useState, useRef } from "react";
 
 const VOICES = {
-  "American Female": [
-    { id: "af_heart",   label: "Heart"   },
-    { id: "af_bella",   label: "Bella"   },
-    { id: "af_nicole",  label: "Nicole"  },
-    { id: "af_sarah",   label: "Sarah"   },
-    { id: "af_sky",     label: "Sky"     },
+  "🇺🇸 American Female": [
+    { id: "af_heart",   label: "Heart",   grade: "A"  },
+    { id: "af_bella",   label: "Bella",   grade: "A-" },
+    { id: "af_nicole",  label: "Nicole",  grade: "B-" },
+    { id: "af_aoede",   label: "Aoede",   grade: "C+" },
+    { id: "af_kore",    label: "Kore",    grade: "C+" },
+    { id: "af_sarah",   label: "Sarah",   grade: "C+" },
+    { id: "af_alloy",   label: "Alloy",   grade: "C"  },
+    { id: "af_nova",    label: "Nova",    grade: "C"  },
+    { id: "af_jessica", label: "Jessica", grade: "D"  },
+    { id: "af_river",   label: "River",   grade: "D"  },
+    { id: "af_sky",     label: "Sky",     grade: "C-" },
   ],
-  "American Male": [
-    { id: "am_adam",    label: "Adam"    },
-    { id: "am_michael", label: "Michael" },
+  "🇺🇸 American Male": [
+    { id: "am_fenrir",  label: "Fenrir",  grade: "C+" },
+    { id: "am_michael", label: "Michael", grade: "C+" },
+    { id: "am_puck",    label: "Puck",    grade: "C+" },
+    { id: "am_echo",    label: "Echo",    grade: "D"  },
+    { id: "am_eric",    label: "Eric",    grade: "D"  },
+    { id: "am_liam",    label: "Liam",    grade: "D"  },
+    { id: "am_onyx",    label: "Onyx",    grade: "D"  },
+    { id: "am_santa",   label: "Santa",   grade: "D-" },
+    { id: "am_adam",    label: "Adam",    grade: "F+" },
   ],
-  "British Female": [
-    { id: "bf_emma",     label: "Emma"     },
-    { id: "bf_isabella", label: "Isabella" },
+  "🇬🇧 British Female": [
+    { id: "bf_emma",     label: "Emma",     grade: "B-" },
+    { id: "bf_isabella", label: "Isabella", grade: "C"  },
+    { id: "bf_alice",    label: "Alice",    grade: "D"  },
+    { id: "bf_lily",     label: "Lily",     grade: "D"  },
   ],
-  "British Male": [
-    { id: "bm_george", label: "George" },
-    { id: "bm_lewis",  label: "Lewis"  },
+  "🇬🇧 British Male": [
+    { id: "bm_fable",  label: "Fable",  grade: "C"  },
+    { id: "bm_george", label: "George", grade: "C"  },
+    { id: "bm_lewis",  label: "Lewis",  grade: "D+" },
+    { id: "bm_daniel", label: "Daniel", grade: "D"  },
+  ],
+  "🇯🇵 Japanese Female": [
+    { id: "jf_alpha",      label: "Alpha",     grade: "C+" },
+    { id: "jf_gongitsune", label: "Gongitsune",grade: "C"  },
+    { id: "jf_tebukuro",   label: "Tebukuro",  grade: "C"  },
+    { id: "jf_nezumi",     label: "Nezumi",    grade: "C-" },
+  ],
+  "🇯🇵 Japanese Male": [
+    { id: "jm_kumo", label: "Kumo", grade: "C-" },
+  ],
+  "🇨🇳 Mandarin Female": [
+    { id: "zf_xiaobei",  label: "Xiaobei",  grade: "D" },
+    { id: "zf_xiaoni",   label: "Xiaoni",   grade: "D" },
+    { id: "zf_xiaoxiao", label: "Xiaoxiao", grade: "D" },
+    { id: "zf_xiaoyi",   label: "Xiaoyi",   grade: "D" },
+  ],
+  "🇨🇳 Mandarin Male": [
+    { id: "zm_yunjian", label: "Yunjian", grade: "D" },
+    { id: "zm_yunxi",   label: "Yunxi",   grade: "D" },
+    { id: "zm_yunxia",  label: "Yunxia",  grade: "D" },
+    { id: "zm_yunyang", label: "Yunyang", grade: "D" },
+  ],
+  "🇪🇸 Spanish": [
+    { id: "ef_dora",  label: "Dora (F)",  grade: "—" },
+    { id: "em_alex",  label: "Alex (M)",  grade: "—" },
+    { id: "em_santa", label: "Santa (M)", grade: "—" },
+  ],
+  "🇫🇷 French": [
+    { id: "ff_siwis", label: "Siwis (F)", grade: "B-" },
+  ],
+  "🇮🇳 Hindi Female": [
+    { id: "hf_alpha", label: "Alpha", grade: "C" },
+    { id: "hf_beta",  label: "Beta",  grade: "C" },
+  ],
+  "🇮🇳 Hindi Male": [
+    { id: "hm_omega", label: "Omega", grade: "C" },
+    { id: "hm_psi",   label: "Psi",   grade: "C" },
+  ],
+  "🇮🇹 Italian": [
+    { id: "if_sara",    label: "Sara (F)",   grade: "C" },
+    { id: "im_nicola",  label: "Nicola (M)", grade: "C" },
+  ],
+  "🇧🇷 Portuguese": [
+    { id: "pf_dora",  label: "Dora (F)",  grade: "—" },
+    { id: "pm_alex",  label: "Alex (M)",  grade: "—" },
+    { id: "pm_santa", label: "Santa (M)", grade: "—" },
   ],
 };
 
+// Flat map for label lookup
+const ALL_VOICES = Object.values(VOICES).flat();
+
 export default function Home() {
-  const [text, setText]       = useState("");
-  const [voice, setVoice]     = useState("af_heart");
-  const [speed, setSpeed]     = useState(1.0);
-  const [loading, setLoading] = useState(false);
+  const [text, setText]         = useState("");
+  const [voice, setVoice]       = useState("af_heart");
+  const [speed, setSpeed]       = useState(1.0);
+  const [loading, setLoading]   = useState(false);
   const [audioUrl, setAudioUrl] = useState(null);
-  const [error, setError]     = useState(null);
+  const [error, setError]       = useState(null);
   const audioRef = useRef(null);
 
   async function handleSubmit(e) {
@@ -58,8 +124,6 @@ export default function Home() {
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       setAudioUrl(url);
-
-      // Auto-play
       setTimeout(() => audioRef.current?.play(), 100);
     } catch (err) {
       setError(err.message);
@@ -69,7 +133,7 @@ export default function Home() {
   }
 
   const charCount = text.length;
-  const selectedVoiceLabel = Object.values(VOICES).flat().find(v => v.id === voice)?.label;
+  const selectedVoice = ALL_VOICES.find(v => v.id === voice);
 
   return (
     <>
@@ -86,7 +150,7 @@ export default function Home() {
           --accent2:  #f03c8c;
           --muted:    #44445a;
           --text:     #e8e8f0;
-          --text-dim: #6868884;
+          --text-dim: #55556a;
         }
 
         body {
@@ -126,9 +190,7 @@ export default function Home() {
           padding: 60px 24px 100px;
         }
 
-        header {
-          margin-bottom: 56px;
-        }
+        header { margin-bottom: 56px; }
 
         .eyebrow {
           font-family: 'DM Mono', monospace;
@@ -146,16 +208,27 @@ export default function Home() {
           letter-spacing: -0.03em;
         }
 
-        h1 span {
-          color: var(--accent);
-        }
+        h1 span { color: var(--accent); }
 
         .subtitle {
           margin-top: 16px;
           font-family: 'DM Mono', monospace;
           font-size: 13px;
-          color: #55556a;
+          color: var(--text-dim);
           font-weight: 300;
+        }
+
+        .voice-count {
+          display: inline-block;
+          margin-top: 10px;
+          font-family: 'DM Mono', monospace;
+          font-size: 11px;
+          color: var(--accent);
+          background: rgba(200,240,60,0.07);
+          border: 1px solid rgba(200,240,60,0.15);
+          border-radius: 3px;
+          padding: 3px 8px;
+          letter-spacing: 0.1em;
         }
 
         form { display: flex; flex-direction: column; gap: 28px; }
@@ -165,7 +238,7 @@ export default function Home() {
           font-size: 11px;
           letter-spacing: 0.15em;
           text-transform: uppercase;
-          color: #55556a;
+          color: var(--text-dim);
           font-family: 'DM Mono', monospace;
           margin-bottom: 10px;
         }
@@ -204,6 +277,11 @@ export default function Home() {
           gap: 20px;
         }
 
+        /* Voice selector with custom styling */
+        .voice-select-wrapper {
+          position: relative;
+        }
+
         select {
           width: 100%;
           background: var(--surface);
@@ -212,7 +290,7 @@ export default function Home() {
           color: var(--text);
           font-family: 'Syne', sans-serif;
           font-size: 14px;
-          padding: 14px 16px;
+          padding: 14px 40px 14px 16px;
           outline: none;
           cursor: pointer;
           transition: border-color 0.2s;
@@ -222,8 +300,42 @@ export default function Home() {
           background-position: right 14px center;
         }
         select:focus { border-color: var(--accent); }
-        optgroup { color: #55556a; font-size: 11px; }
-        option { background: #111118; color: var(--text); }
+        optgroup {
+          color: var(--text-dim);
+          font-size: 11px;
+          font-style: normal;
+          background: #0d0d15;
+        }
+        option {
+          background: #111118;
+          color: var(--text);
+          padding: 4px 0;
+        }
+
+        /* Voice badge shown below select */
+        .voice-badge {
+          margin-top: 8px;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-family: 'DM Mono', monospace;
+          font-size: 11px;
+          color: var(--text-dim);
+        }
+        .grade-pill {
+          font-family: 'DM Mono', monospace;
+          font-size: 10px;
+          padding: 2px 7px;
+          border-radius: 3px;
+          border: 1px solid rgba(200,240,60,0.2);
+          color: var(--accent);
+          background: rgba(200,240,60,0.05);
+        }
+        .grade-pill.low {
+          border-color: rgba(240,60,140,0.2);
+          color: var(--accent2);
+          background: rgba(240,60,140,0.05);
+        }
 
         .speed-wrapper {
           display: flex;
@@ -380,6 +492,7 @@ export default function Home() {
           <p className="eyebrow">Kokoro · 82M · Neural TTS</p>
           <h1>Type.<br /><span>Hear.</span></h1>
           <p className="subtitle">// powered by kokoro-82m via modal.com</p>
+          <span className="voice-count">54 voices · 9 languages</span>
         </header>
 
         <form onSubmit={handleSubmit}>
@@ -399,22 +512,36 @@ export default function Home() {
           <div className="controls-row">
             <div className="field">
               <label>Voice</label>
-              <select value={voice} onChange={e => setVoice(e.target.value)}>
-                {Object.entries(VOICES).map(([group, voices]) => (
-                  <optgroup key={group} label={group}>
-                    {voices.map(v => (
-                      <option key={v.id} value={v.id}>{v.label}</option>
-                    ))}
-                  </optgroup>
-                ))}
-              </select>
+              <div className="voice-select-wrapper">
+                <select value={voice} onChange={e => setVoice(e.target.value)}>
+                  {Object.entries(VOICES).map(([group, voices]) => (
+                    <optgroup key={group} label={group}>
+                      {voices.map(v => (
+                        <option key={v.id} value={v.id}>
+                          {v.label}{v.grade && v.grade !== "—" ? ` · ${v.grade}` : ""}
+                        </option>
+                      ))}
+                    </optgroup>
+                  ))}
+                </select>
+                {selectedVoice && (
+                  <div className="voice-badge">
+                    <span>{selectedVoice.id}</span>
+                    {selectedVoice.grade && selectedVoice.grade !== "—" && (
+                      <span className={`grade-pill ${["D","D-","F+","D+"].includes(selectedVoice.grade) ? "low" : ""}`}>
+                        {selectedVoice.grade}
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="field">
               <label>Speed</label>
               <div className="speed-wrapper">
                 <div className="speed-display">
-                  <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 12, color: "#55556a" }}>
+                  <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 12, color: "var(--text-dim)" }}>
                     {speed <= 0.8 ? "slow" : speed >= 1.5 ? "fast" : "normal"}
                   </span>
                   <span className="speed-val">{speed.toFixed(1)}×</span>
@@ -459,7 +586,7 @@ export default function Home() {
             <p className="audio-label">▶ Output ready</p>
             <audio ref={audioRef} controls src={audioUrl} />
             <div className="audio-meta">
-              <span>{selectedVoiceLabel} · {speed.toFixed(1)}×</span>
+              <span>{selectedVoice?.label} · {speed.toFixed(1)}×</span>
               <a className="download-btn" href={audioUrl} download="kokoro-output.wav">
                 ↓ download wav
               </a>
